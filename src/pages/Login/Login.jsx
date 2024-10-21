@@ -6,8 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import './login.css';
 import google_logo from '../../assets/icons/Google.png';
 import ParticleEffect from '../../components/ParticleEffect.jsx';
-import password_icon from '../../assets/Icons/lock-stroke-rounded.svg';
-import email_icon from '../../assets/Icons/mail-stroke-rounded.svg';
+import password_icon from '../../assets/icons/lock-stroke-rounded.svg';
+import email_icon from '../../assets/icons/mail-stroke-rounded.svg';
 
 const Login = () => {
   const [email, setEmail] = useState('');

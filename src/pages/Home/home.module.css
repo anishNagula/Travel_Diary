@@ -1,0 +1,16 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+.mainContainer {
+  width: 100%;
+  height: 100vh;
+  background-color: lightblue;
+  color: #000;
+}

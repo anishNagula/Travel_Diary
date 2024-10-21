@@ -4,7 +4,7 @@ import { auth, googleProvider } from '../../firebase.js';
 import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import './login.css';
-import google_logo from '../../assets/Icons/Google.png';
+import google_logo from '../../assets/icons/Google.png';
 import ParticleEffect from '../../components/ParticleEffect.jsx';
 import password_icon from '../../assets/Icons/lock-stroke-rounded.svg';
 import email_icon from '../../assets/Icons/mail-stroke-rounded.svg';

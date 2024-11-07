@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './home.css';
 import MainNavbar from '../../layouts/Main_Navbar/MainNavbar.jsx';
 import Sidebar from '../../layouts/Sidebar/Sidebar.jsx';
-import post from '../../assets/Icons/sent-stroke-rounded.svg';
+import post from '../../assets/Icons/sentpost-stroke-rounded.svg';
 import image from '../../assets/Icons/image-02-stroke-rounded.svg';
 import clip from '../../assets/Icons/attachment-02-stroke-rounded.svg';
 import post_image from '../../assets/hackathon.jpg'

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom'; // Add this line
 import styles from './navbar.module.css';
-import logo from '../../assets/icons/backpack-stroke-rounded.svg'
+import logo from '../../assets/icon/backpack-stroke-rounded.svg'
 
 const Navbar = () => {
   return (

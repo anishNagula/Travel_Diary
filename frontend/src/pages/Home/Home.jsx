@@ -2,17 +2,17 @@ import React, { useState } from 'react';
 import './home.css';
 import MainNavbar from '../../layouts/Main_Navbar/MainNavbar.jsx';
 import Sidebar from '../../layouts/Sidebar/Sidebar.jsx';
-import post from '../../assets/Icons/sent-stroke-rounded.svg';
-import image from '../../assets/Icons/image-02-stroke-rounded.svg';
-import clip from '../../assets/Icons/attachment-02-stroke-rounded.svg';
+import post from '../../assets/icon/sent-stroke-rounded.svg';
+import image from '../../assets/icon/image-02-stroke-rounded.svg';
+import clip from '../../assets/icon/attachment-02-stroke-rounded.svg';
 import post_image from '../../assets/hackathon.jpg'
-import like from '../../assets/Icons/Like1-Linear-32px.svg'
-import dislike from '../../assets/Icons/Dislike-Linear-32px.svg'
-import comment from '../../assets/Icons/bubble-chat-stroke-rounded.svg'
-import share from '../../assets/Icons/share-01-stroke-rounded.svg'
-import reply from '../../assets/Icons/arrow-move-up-left-stroke-rounded.svg'
-import reply_next from '../../assets/Icons/arrow-move-down-right-stroke-rounded.svg'
-import deleteIcon from '../../assets/Icons/delete-02-stroke-rounded.svg'
+import like from '../../assets/icon/Like1-Linear-32px.svg'
+import dislike from '../../assets/icon/Dislike-Linear-32px.svg'
+import comment from '../../assets/icon/bubble-chat-stroke-rounded.svg'
+import share from '../../assets/icon/share-01-stroke-rounded.svg'
+import reply from '../../assets/icon/arrow-move-up-left-stroke-rounded.svg'
+import reply_next from '../../assets/icon/arrow-move-down-right-stroke-rounded.svg'
+import deleteIcon from '../../assets/icon/delete-02-stroke-rounded.svg'
 
 
 const ForumPost = ({ postDetails }) => {

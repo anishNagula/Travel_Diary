@@ -1,192 +1,58 @@
-import React, { useState } from 'react';
+// Home.jsx
+import React, { useState, useEffect } from 'react';
 import './home.css';
 import MainNavbar from '../../layouts/Main_Navbar/MainNavbar.jsx';
 import Sidebar from '../../layouts/Sidebar/Sidebar.jsx';
-import post from '../../assets/icon/sent-stroke-rounded.svg';
-import image from '../../assets/icon/image-02-stroke-rounded.svg';
-import clip from '../../assets/icon/attachment-02-stroke-rounded.svg';
-import post_image from '../../assets/hackathon.jpg'
-import like from '../../assets/icon/Like1-Linear-32px.svg'
-import dislike from '../../assets/icon/Dislike-Linear-32px.svg'
-import comment from '../../assets/icon/bubble-chat-stroke-rounded.svg'
-import share from '../../assets/icon/share-01-stroke-rounded.svg'
-import reply from '../../assets/icon/arrow-move-up-left-stroke-rounded.svg'
-import reply_next from '../../assets/icon/arrow-move-down-right-stroke-rounded.svg'
-import deleteIcon from '../../assets/icon/delete-02-stroke-rounded.svg'
-
-
-const ForumPost = ({ postDetails }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [newComment, setNewComment] = useState('');
-  const [comments, setComments] = useState(postDetails.comments);
-  const [replyInput, setReplyInput] = useState({});
-  
-  const toggleComments = () => {
-    setIsExpanded(!isExpanded);
-  };
-
-  const handleAddComment = () => {
-    if (newComment.trim() !== '') {
-      setComments([...comments, { user: 'You', text: newComment, replies: [] }]);
-      setNewComment('');
-    }
-  };
-
-  const handleReplyIconClick = (index) => {
-    setReplyInput((prev) => ({
-      ...prev,
-      [index]: prev[index] === undefined ? '' : undefined  // Toggles between open and closed
-    }));
-  };
-
-  const handleReplyInputChange = (index, value) => {
-    setReplyInput({ ...replyInput, [index]: value });
-  };
-
-  const handleAddReply = (index) => {
-    if (replyInput[index]?.trim() !== '') {
-      const updatedComments = comments.map((comment, i) => 
-        i === index ? { ...comment, replies: [...(comment.replies || []), { user: 'You', text: replyInput[index] }] } : comment
-      );
-      setComments(updatedComments);
-      setReplyInput({ ...replyInput, [index]: undefined });  // Close reply field after replying
-    }
-  };
-
-  const handleDeleteReply = (commentIndex, replyIndex) => {
-    const updatedComments = comments.map((comment, i) => {
-      if (i === commentIndex) {
-        const updatedReplies = comment.replies.filter((_, rIndex) => rIndex !== replyIndex);
-        return { ...comment, replies: updatedReplies };
-      }
-      return comment;
-    });
-    setComments(updatedComments);
-  };
-
-  return (
-    <div className="forum_post">
-      <div className="forum_post_details">
-        <img src={postDetails.profilePic} alt="post_profile_pic" />
-        <p>{postDetails.username}</p>
-      </div>
-      <h4>{postDetails.title}</h4>
-      <p>{postDetails.content}</p>
-      <img src={postDetails.image} alt="post_image" />
-      <div className="forum_post_bottom">
-        <div className="forum_post_bottom_like">
-          <img src={like} alt="like" />
-          <p>{postDetails.likes}</p>
-        </div>
-        <img src={dislike} alt="dislike" />
-        <img src={comment} alt="comment" onClick={toggleComments} />
-        <img src={share} alt="share" />
-      </div>
-      {isExpanded && (
-        <div className="forum_comments_section">
-          <h4>Comments:</h4>
-          {comments.map((comment, index) => (
-            <div className="forum_comments_section_inner">
-              <div key={index} className="forum_comment">
-              <div className="forum_comment_user">
-                <strong>{comment.user}:</strong>
-                <p>{comment.text}</p>
-              </div>
-              <div className="forum_comment_right">
-                <img 
-                  src={reply} 
-                  alt="reply" 
-                  onClick={() => handleReplyIconClick(index)}
-                  style={{ cursor: 'pointer', marginLeft: '8px' }}
-                />
-                <p>reply</p>
-              </div>
-            </div>
-            <div className="reply-container">
-                {replyInput[index] !== undefined && (
-                  <div className="reply-input">
-                    <input
-                      type="text"
-                      placeholder="Reply..."
-                      value={replyInput[index]}
-                      onChange={(e) => handleReplyInputChange(index, e.target.value)}
-                    />
-                    <button onClick={() => handleAddReply(index)}>Reply</button>
-                  </div>
-                )}
-                {comment.replies && comment.replies.map((reply, replyIndex) => (
-                  <div key={replyIndex} className="forum_reply">
-                    <img src={reply_next} alt="arrow" />
-                    <strong>{reply.user}:</strong> <p>{reply.text}</p>
-                    <img 
-                      src={deleteIcon} 
-                      alt="delete" 
-                      onClick={() => handleDeleteReply(index, replyIndex)}
-                      style={{ cursor: 'pointer', marginLeft: '8px' }}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-          <div className="user_comment_container">
-            <input
-              type="text"
-              placeholder="Add a comment..."
-              className="forum_add_comment"
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-            />
-            <button className="comment_button" onClick={handleAddComment}>
-              Post
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
+import postIcon from '../../assets/icon/sent-stroke-rounded.svg';
+import imageIcon from '../../assets/icon/image-02-stroke-rounded.svg';
+import clipIcon from '../../assets/icon/attachment-02-stroke-rounded.svg';
+import ForumPost from '../../components/Post/Post.jsx';
 
 const Home = () => {
+  const [posts, setPosts] = useState([]); // To hold the fetched posts
+  const [newPost, setNewPost] = useState({ title: '', content: '' }); // For handling new post form data
+  const [selectedImage, setSelectedImage] = useState(null); // To handle image upload for a new post
 
-  const posts = [
-    {
-      profilePic: 'https://robohash.org/default?size=20x20',
-      username: 'User123',
-      title: 'Lorem ipsum, dolor sit amet consectetur adipi.',
-      content: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit...',
-      image: 'https://picsum.photos/1000/500',
-      likes: 3,
-      comments: [
-        { user: 'Alice', text: 'This is so interesting!' },
-        { user: 'Bob', text: 'Nice post!' },
-      ],
-    },
-    {
-      profilePic: 'https://robohash.org/default1?size=20x20',
-      username: 'CoolCat',
-      title: 'Check out this amazing hackathon!',
-      content: 'I attended an amazing hackathon and wanted to share...',
-      image: post_image,
-      likes: 69,
-      comments: [
-        { user: 'Charlie', text: 'Awesome experience!' },
-        { user: 'Dave', text: 'Let’s team up next time!' },
-      ],
-    },
-    {
-      profilePic: 'https://robohash.org/default9?size=20x20',
-      username: 'GamerGuy',
-      title: 'Game Development in React',
-      content: 'Game development in React has been a lot of fun...',
-      image: 'https://picsum.photos/300/300',
-      likes: 112,
-      comments: [
-        { user: 'Eve', text: 'I’d love to learn more about this!' },
-      ],
-    },
-  ];
+  // Fetch posts from the backend
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/posts'); // Ensure the API endpoint is correct
+        const data = await response.json();
+        setPosts(data); // Store the fetched posts in state
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+  // Handle new post submission
+  const handlePostSubmit = async () => {
+    try {
+      const formData = new FormData();
+      formData.append('title', newPost.title);
+      formData.append('content', newPost.content);
+      if (selectedImage) formData.append('image', selectedImage); // Attach selected image if available
+
+      const response = await fetch('http://localhost:5000/api/posts', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const newPostData = await response.json();
+        setPosts((prevPosts) => [newPostData, ...prevPosts]); // Add the new post to the front of the list
+        setNewPost({ title: '', content: '' }); // Clear input fields
+        setSelectedImage(null); // Clear image selection
+      } else {
+        console.error('Error posting the new post');
+      }
+    } catch (error) {
+      console.error('Error submitting post:', error);
+    }
+  };
 
   return (
     <div>
@@ -195,22 +61,53 @@ const Home = () => {
       <div className="forum-container">
         <main className="forum-feed">
           <div className="forum-feed-container">
-            {posts.map((postDetails, index) => (
-              <ForumPost key={index} postDetails={postDetails} />
-            ))}
+            {/* Render the posts */}
+            {posts.length > 0 ? (
+              posts.map((postDetails) => (
+                <ForumPost
+                  key={postDetails._id} // Ensure each post has a unique key
+                  postDetails={postDetails} // Pass post details as a prop to ForumPost component
+                />
+              ))
+            ) : (
+              <p>No posts available</p>
+            )}
           </div>
           <div className="forum-search-bar-forum">
-            <input type="text" placeholder="Post ..."/>
-            <img className='forum-clip-icon' src={clip} alt="search thread icon" />
-            <img className='forum-image-icon' src={image} alt="search thread icon" />
-            <img className='forum-post-icon' src={post} alt="post icon" />
+            <input
+              type="text"
+              placeholder="Title..."
+              value={newPost.title}
+              onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="Content..."
+              value={newPost.content}
+              onChange={(e) => setNewPost({ ...newPost, content: e.target.value })}
+            />
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setSelectedImage(e.target.files[0])}
+              style={{ display: 'none' }}
+              id="image-upload"
+            />
+            <label htmlFor="image-upload">
+              <img className="forum-image-icon" src={imageIcon} alt="image icon" />
+            </label>
+            <img className="forum-clip-icon" src={clipIcon} alt="attachment icon" />
+            <img
+              className="forum-post-icon"
+              src={postIcon}
+              alt="post icon"
+              onClick={handlePostSubmit} // Handle post submission when clicked
+            />
           </div>
         </main>
-
-        
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default Home;

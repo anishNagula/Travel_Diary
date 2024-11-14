@@ -17,7 +17,7 @@ const Home = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/posts'); // Ensure the API endpoint is correct
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/posts`); // Ensure the API endpoint is correct
         const data = await response.json();
         setPosts(data); // Store the fetched posts in state
       } catch (error) {
@@ -36,7 +36,7 @@ const Home = () => {
       formData.append('content', newPost.content);
       if (selectedImage) formData.append('image', selectedImage); // Attach selected image if available
 
-      const response = await fetch('http://localhost:5000/api/posts', {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/posts`, {
         method: 'POST',
         body: formData,
       });

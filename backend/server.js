@@ -1,9 +1,6 @@
 const express = require('express');
-const corsOptions = {
-  origin: 'https://yourfrontenddomain.vercel.app', // replace with your actual frontend URL
-  methods: ['GET', 'POST'],
-};
-app.use(cors(corsOptions));
+const cors = require('cors');
+
 const connectDB = require('./config/db'); // Updated to match the filename you used
 const postRoutes = require('./routes/posts');
 require('dotenv').config();
@@ -15,6 +12,7 @@ const PORT = process.env.PORT || 5000;
 connectDB();
 
 // Middleware
+app.use(cors());
 app.use(express.json()); // Express has a built-in body parser, so this replaces body-parser
 
 // Serve static files from 'uploads' folder

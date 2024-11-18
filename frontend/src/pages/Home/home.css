@@ -34,6 +34,11 @@ body {
   margin-bottom: 60px;
 }
 
+.forum-feed-container > p {
+  text-align: center;
+  margin-top: 25%;
+}
+
 .forum_post {
   height: auto;
   margin: 20px 0;
@@ -98,6 +103,11 @@ body {
 .forum_post_bottom_like > p {
   color: #9c9c9c;
   font-size: 12px;
+}
+
+.delete-post-icon {
+  width: 15px;
+  height: 15px;
 }
 
 .forum_comments_section {
@@ -269,10 +279,13 @@ body {
   position: relative;
   color: #f6f4f1;
 }
+.forum-search-bar-forum input:first-child {
+  margin-right: 10px;
+}
 
 .forum-clip-icon {
   position: absolute;
-  right: 100px;
+  right: -5px;
   top: 50%;
   transform: translateY(-50%);
   color: #888;
@@ -283,7 +296,7 @@ body {
 
 .forum-image-icon {
   position: absolute;
-  right: 70px;
+  right: -35px;
   top: 50%;
   transform: translateY(-50%);
   color: #888;
@@ -294,7 +307,7 @@ body {
 
 .forum-post-icon {
   position: absolute;
-  right: 40px;
+  right: -65px;
   top: 50%;
   transform: translateY(-50%);
   color: #888;

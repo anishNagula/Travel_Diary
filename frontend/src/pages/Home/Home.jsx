@@ -54,6 +54,10 @@ const Home = () => {
     }
   };
 
+  const handleDeletePost = (id) => {
+    setPosts((prevPosts) => prevPosts.filter((post) => post._id !== id));
+  };
+
   return (
     <div>
       <MainNavbar />
@@ -67,6 +71,14 @@ const Home = () => {
                 <ForumPost
                   key={postDetails._id} // Ensure each post has a unique key
                   postDetails={postDetails} // Pass post details as a prop to ForumPost component
+                  onDelete={handleDeletePost}
+                  onLike={(id, updatedLikes) => {
+                    setPosts((prevPosts) =>
+                      prevPosts.map((p) =>
+                        p._id === id ? { ...p, likes: updatedLikes } : p
+                      )
+                    );
+                  }}
                 />
               ))
             ) : (

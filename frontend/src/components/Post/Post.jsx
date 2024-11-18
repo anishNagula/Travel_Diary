@@ -1,20 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'; // Import axios for making HTTP requests
 import '../../pages/Home/home.css';
 import like from '../../assets/icon/Like1-Linear-32px.svg';
 import dislike from '../../assets/icon/Dislike-Linear-32px.svg';
 import comment from '../../assets/icon/bubble-chat-stroke-rounded.svg';
 import share from '../../assets/icon/share-01-stroke-rounded.svg';
-import reply from '../../assets/icon/arrow-move-up-left-stroke-rounded.svg';
-import reply_next from '../../assets/icon/arrow-move-down-right-stroke-rounded.svg';
 import deleteIcon from '../../assets/icon/delete-02-stroke-rounded.svg';
 
-const ForumPost = ({ postDetails }) => {
-  console.log(postDetails); // Log the post data
+const ForumPost = ({ postDetails, onDelete, onLike }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [newComment, setNewComment] = useState('');
   const [comments, setComments] = useState(postDetails.comments);
-  const [replyInput, setReplyInput] = useState({});
+  const [likes, setLikes] = useState(postDetails.likes);
   
   const toggleComments = () => {
     setIsExpanded(!isExpanded);
@@ -27,36 +23,38 @@ const ForumPost = ({ postDetails }) => {
     }
   };
 
-  const handleReplyIconClick = (index) => {
-    setReplyInput((prev) => ({
-      ...prev,
-      [index]: prev[index] === undefined ? '' : undefined  // Toggles between open and closed
-    }));
-  };
-
-  const handleReplyInputChange = (index, value) => {
-    setReplyInput({ ...replyInput, [index]: value });
-  };
-
-  const handleAddReply = (index) => {
-    if (replyInput[index]?.trim() !== '') {
-      const updatedComments = comments.map((comment, i) => 
-        i === index ? { ...comment, replies: [...(comment.replies || []), { user: 'You', text: replyInput[index] }] } : comment
-      );
-      setComments(updatedComments);
-      setReplyInput({ ...replyInput, [index]: undefined });  // Close reply field after replying
+  const handleLikePost = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/posts/${postDetails._id}/like`, {
+        method: 'POST',
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setLikes(data.likes); // Update the likes state in the frontend
+        onLike(postDetails._id, data.likes);
+      } else {
+        console.error('Failed to update likes');
+      }
+    } catch (error) {
+      console.error('Error updating likes:', error);
     }
   };
+  
+  
 
-  const handleDeleteReply = (commentIndex, replyIndex) => {
-    const updatedComments = comments.map((comment, i) => {
-      if (i === commentIndex) {
-        const updatedReplies = comment.replies.filter((_, rIndex) => rIndex !== replyIndex);
-        return { ...comment, replies: updatedReplies };
+  const handleDeletePost = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/posts/${postDetails._id}`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        onDelete(postDetails._id); // Notify parent about the deletion
+      } else {
+        console.error('Failed to delete post');
       }
-      return comment;
-    });
-    setComments(updatedComments);
+    } catch (error) {
+      console.error('Error deleting post:', error);
+    }
   };
 
   return (
@@ -64,12 +62,23 @@ const ForumPost = ({ postDetails }) => {
       <div className="forum_post_details">
         <img src={postDetails.profilePic} alt="post_profile_pic" />
         <p>{postDetails.username}</p>
+        <img className="delete-post-icon"
+          src={deleteIcon} 
+          alt="delete post"
+          onClick={handleDeletePost}
+          style={{ cursor: 'pointer', marginLeft: '8px' }} 
+        />
       </div>
       <h4>{postDetails.title}</h4>
       <p>{postDetails.content}</p>
-      {postDetails.image && <img src={postDetails.image} alt="Post image" />}
+      {postDetails.image && (
+        <img 
+          src={`http://localhost:5000/${postDetails.image}`} 
+          alt="Post image" 
+        />
+      )}
       <div className="forum_post_bottom">
-        <div className="forum_post_bottom_like">
+        <div className="forum_post_bottom_like" onClick={handleLikePost}>
           <img src={like} alt="like" />
           <p>{postDetails.likes}</p>
         </div>
@@ -87,41 +96,7 @@ const ForumPost = ({ postDetails }) => {
                 <strong>{comment.user}:</strong>
                 <p>{comment.text}</p>
               </div>
-              <div className="forum_comment_right">
-                <img 
-                  src={reply} 
-                  alt="reply" 
-                  onClick={() => handleReplyIconClick(index)}
-                  style={{ cursor: 'pointer', marginLeft: '8px' }}
-                />
-                <p>reply</p>
-              </div>
-            </div>
-            <div className="reply-container">
-                {replyInput[index] !== undefined && (
-                  <div className="reply-input">
-                    <input
-                      type="text"
-                      placeholder="Reply..."
-                      value={replyInput[index]}
-                      onChange={(e) => handleReplyInputChange(index, e.target.value)}
-                    />
-                    <button onClick={() => handleAddReply(index)}>Reply</button>
-                  </div>
-                )}
-                {comment.replies && comment.replies.map((reply, replyIndex) => (
-                  <div key={replyIndex} className="forum_reply">
-                    <img src={reply_next} alt="arrow" />
-                    <strong>{reply.user}:</strong> <p>{reply.text}</p>
-                    <img 
-                      src={deleteIcon} 
-                      alt="delete" 
-                      onClick={() => handleDeleteReply(index, replyIndex)}
-                      style={{ cursor: 'pointer', marginLeft: '8px' }}
-                    />
-                  </div>
-                ))}
-              </div>
+            </div>            
             </div>
           ))}
           <div className="user_comment_container">

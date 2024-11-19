@@ -16,12 +16,33 @@ const ForumPost = ({ postDetails, onDelete, onLike }) => {
     setIsExpanded(!isExpanded);
   };
 
-  const handleAddComment = () => {
+  const handleAddComment = async () => {
     if (newComment.trim() !== '') {
-      setComments([...comments, { user: 'You', text: newComment, replies: [] }]);
-      setNewComment('');
+      try {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/posts/${postDetails._id}/comment`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username: 'You',
+            content: newComment,
+          }),
+        });
+
+        if (response.ok) {
+          const updatedPost = await response.json();
+          setComments(updatedPost.comments);
+          setNewComment('');
+        } else {
+          console.error('Failed to add comment');
+        }
+      } catch (error) {
+        console.error('Error adding comment:', error);
+      }
     }
   };
+  
 
   const handleLikePost = async () => {
     try {
@@ -30,7 +51,7 @@ const ForumPost = ({ postDetails, onDelete, onLike }) => {
       });
       if (response.ok) {
         const data = await response.json();
-        setLikes(data.likes); // Update the likes state in the frontend
+        setLikes(data.likes);
         onLike(postDetails._id, data.likes);
       } else {
         console.error('Failed to update likes');
@@ -48,7 +69,7 @@ const ForumPost = ({ postDetails, onDelete, onLike }) => {
         method: 'DELETE',
       });
       if (response.ok) {
-        onDelete(postDetails._id); // Notify parent about the deletion
+        onDelete(postDetails._id);
       } else {
         console.error('Failed to delete post');
       }
@@ -90,13 +111,13 @@ const ForumPost = ({ postDetails, onDelete, onLike }) => {
         <div className="forum_comments_section">
           <h4>Comments:</h4>
           {comments.map((comment, index) => (
-            <div className="forum_comments_section_inner">
+            <div className="forum_comments_section_inner" key={index}>
               <div key={index} className="forum_comment">
-              <div className="forum_comment_user">
-                <strong>{comment.user}:</strong>
-                <p>{comment.text}</p>
+                <div className="forum_comment_user">
+                  <strong>{comment.username}:</strong>
+                  <p>{comment.content}</p>
+                </div>
               </div>
-            </div>            
             </div>
           ))}
           <div className="user_comment_container">

@@ -7,6 +7,9 @@ import Login from './pages/Login/Login';
 import Signup from './pages/Signup/Signup';
 import { onAuthStateChanged } from 'firebase/auth';
 import Landing from '../src/pages/Landing/Landing'
+import Why from './pages/Why.jsx';
+import Reviews from './pages/Reviews.jsx';
+import Contact from './pages/Contact.jsx';
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -33,6 +36,9 @@ const App = () => {
         <Route path="/" element={user ? <Navigate to="/home" /> : <Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/why" element={<Why />} />
+        <Route path="/reviews" element={<Reviews />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/home" element={user ? <Home /> : <Navigate to="/" />} />
         <Route path="/profile" element={user ? <Profile /> : <Navigate to="/" />} />
         <Route path="*" element={<Navigate to="/" replace />} />

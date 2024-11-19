@@ -1,6 +1,6 @@
 const express = require('express');
 const Post = require('../models/post.js');
-const multer = require('multer'); // Import multer for handling file uploads
+const multer = require('multer');
 const path = require('path');
 
 const router = express.Router();
@@ -8,10 +8,10 @@ const router = express.Router();
 // Set up multer for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Specify the directory to save uploaded files
+    cb(null, 'uploads/');
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // Create a unique filename
+    cb(null, Date.now() + path.extname(file.originalname));
   },
 });
 
@@ -43,34 +43,17 @@ router.post('/', upload.single('image'), async (req, res) => {
 
   // Check if an image was uploaded
   if (req.file) {
-    const normalizedImagePath = req.file.path.replace(/\\+/g, '/'); // Normalize the path to use forward slashes
+    const normalizedImagePath = req.file.path.replace(/\\+/g, '/');
     console.log('Normalized Image Path:', normalizedImagePath);
-    newPost.image = normalizedImagePath; // Save the normalized image path
+    newPost.image = normalizedImagePath;
   } else {
-    newPost.image = null; // Set image to null if no image was uploaded
+    newPost.image = null;
     console.log('No image uploaded');
   }
 
   try {
     const savedPost = await newPost.save();
-    res.status(201).json(savedPost); // Return the created post as the response
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
-
-// Add a comment to a post
-router.post('/:id/comments', async (req, res) => {
-  try {
-    const post = await Post.findById(req.params.id);
-    if (!post) {
-      return res.status(404).json({ message: 'Post not found' });
-    }
-
-    // Assuming req.body contains the comment data
-    post.comments.push(req.body);
-    const updatedPost = await post.save();
-    res.json(updatedPost);
+    res.status(201).json(savedPost);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -90,21 +73,48 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+// Find the post by its ID to increase likes
 router.post('/:id/like', async (req, res) => {
   try {
-    // Find the post by its ID
     const post = await Post.findById(req.params.id);
     if (!post) {
       return res.status(404).json({ message: 'Post not found' });
     }
 
-    // Increment likes
     post.likes += 1;
     await post.save();
 
     res.status(200).json({ likes: post.likes });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+});
+
+// Add a comment to a post
+router.post('/:id/comment', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { username, content } = req.body;
+
+    const post = await Post.findById(id);
+
+    if (!post) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
+
+    const newComment = {
+      username: username || 'Anonymous',
+      content: content,
+      createdAt: new Date(),
+    };
+
+    post.comments.push(newComment);
+
+    await post.save();
+
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(500).json({ error: 'Server error, unable to add comment' });
   }
 });
 

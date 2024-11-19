@@ -66,6 +66,7 @@ hr {
   font-size: 2em;
   margin-top: 20px;
   margin-bottom: 50px;
+  text-decoration: underline;
 }
 
 .innerLeft, .innerRight {
@@ -77,14 +78,6 @@ hr {
   padding: 20px;
   border-radius: 8px;
   border: 1px solid #2f343a;
-  opacity: 0; /* Hidden by default */
-  transform: translateY(20px); /* Slight move down */
-  transition: opacity 0.8s ease-out, transform 0.8s ease-out; /* Smooth transition */
-}
-
-.innerLeft.visible, .innerRight.visible {
-  opacity: 1; /* Fully visible */
-  transform: translateY(0); /* Moves into place */
 }
 
 .innerLeft {
@@ -135,9 +128,6 @@ hr {
   border-radius: 8px;
   color: #f6f4f1;
   border: 1px solid #2f343a;
-  opacity: 0;
-  transform: translateX(-100%); /* Move cards off to the left */
-  transition: transform 0.8s ease-out, opacity 0.8s ease-out;
 }
 
 .card.visible {

@@ -21,8 +21,13 @@ body {
   border-bottom: 1.5px solid #2f343a;
 }
 
-.mainContainer > img {
+.logo {
   width: 30px;
+  height: 30px;
+}
+
+.rightsection {
+  display: flex;
 }
 
 .rightsection > button {
@@ -48,4 +53,17 @@ body {
 
 .rightsection > button a:visited {
   color: inherit; /* Ensure no purple visited color */
+}
+
+.rightsection ul {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-right: 20px;
+  list-style: none;
+}
+
+.rightsection a {
+  text-decoration: none;
+  color: white;
 }

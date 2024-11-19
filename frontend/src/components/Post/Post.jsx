@@ -6,12 +6,12 @@ import comment from '../../assets/icon/bubble-chat-stroke-rounded.svg';
 import share from '../../assets/icon/share-01-stroke-rounded.svg';
 import deleteIcon from '../../assets/icon/delete-02-stroke-rounded.svg';
 
-const ForumPost = ({ postDetails, onDelete, onLike }) => {
+const ForumPost = ({ postDetails, onDelete, onLike, currentUser }) => {  // Pass currentUser as a prop
   const [isExpanded, setIsExpanded] = useState(false);
   const [newComment, setNewComment] = useState('');
   const [comments, setComments] = useState(postDetails.comments);
   const [likes, setLikes] = useState(postDetails.likes);
-  
+
   const toggleComments = () => {
     setIsExpanded(!isExpanded);
   };
@@ -25,7 +25,7 @@ const ForumPost = ({ postDetails, onDelete, onLike }) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            username: 'You',
+            username: currentUser.username,  // Use currentUser's username for the comment
             content: newComment,
           }),
         });
@@ -42,7 +42,6 @@ const ForumPost = ({ postDetails, onDelete, onLike }) => {
       }
     }
   };
-  
 
   const handleLikePost = async () => {
     try {
@@ -60,8 +59,6 @@ const ForumPost = ({ postDetails, onDelete, onLike }) => {
       console.error('Error updating likes:', error);
     }
   };
-  
-  
 
   const handleDeletePost = async () => {
     try {

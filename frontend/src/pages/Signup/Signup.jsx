@@ -1,41 +1,46 @@
-// Signup.js
 import React, { useState } from 'react';
-import { auth, googleProvider } from '../../firebase.js'; // Adjust the path as necessary
-import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import './signup.css';
-import google_logo from '../../assets/icon/Google.png'
 import ParticleEffect from '../../components/ParticleEffect.jsx';
 import password_icon from '../../assets/icon/lock-stroke-rounded.svg';
 import email_icon from '../../assets/icon/mail-stroke-rounded.svg';
+import profile_icon from '../../assets/icon/user-stroke-rounded.svg'
 
-const Signup = () => {
+const Signup = ({ onLogin }) => {
   const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
- const navigate = useNavigate();
+  const [success, setSuccess] = useState('');
+  const navigate = useNavigate();
 
   const handleSignup = async (e) => {
     e.preventDefault();
+
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
     }
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      navigate('/home'); // Redirect to the home page after successful signup
-    } catch (error) {
-      setError(error.message);
-    }
-  };
 
-  const handleGoogleSignup = async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
-      navigate('/home'); // Redirect to the home page after successful signup
-    } catch (error) {
-      setError(error.message);
+      const response = await fetch('http://localhost:5000/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, username, password }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('User created successfully:', data.user);
+        onLogin(data.user); // Update the user state in App.jsx
+        navigate('/home'); // Navigate to /home
+      } else {
+        const data = await response.json();
+        setError(data.msg || 'An error occurred during signup.');
+      }
+    } catch (err) {
+      setError('An error occurred while signing up.');
     }
   };
 
@@ -54,6 +59,16 @@ const Signup = () => {
               required
             />
             <img className='signup-email-icon' src={email_icon} alt="email icon" />
+
+            <input
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+            <img className='signup-profile-icon' src={profile_icon} alt="username icon" />
+
             <input
               type="password"
               placeholder="Password"
@@ -62,6 +77,7 @@ const Signup = () => {
               required
             />
             <img className='signup-password-icon-1' src={password_icon} alt="password icon" />
+
             <input
               type="password"
               placeholder="Confirm Password"
@@ -70,17 +86,13 @@ const Signup = () => {
               required
             />
             <img className='signup-password-icon-2' src={password_icon} alt="password icon" />
-
             <p>
-              Already have an account? <a href="/login">Login here</a>
+              Hhave an account? <a href="/login">Login here</a>
             </p>
-
             <button className='signup-button' type="submit">Signup</button>
           </form>
-          <button className="google-button" onClick={handleGoogleSignup}>
-            <img className="google-logo" src={google_logo} alt="Google Logo" />
-            Signup with Google</button>
-            {error && <p className="signup-error-text">{error}</p>}
+          {error && <p className="signup-error-text">{error}</p>}
+          {success && <p className="signup-success-text">{success}</p>}
         </div>
       </div>
     </div>

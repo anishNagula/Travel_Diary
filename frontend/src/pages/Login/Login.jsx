@@ -1,38 +1,46 @@
-// Login.js
 import React, { useState } from 'react';
-import { auth, googleProvider } from '../../firebase.js';
-import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import './login.css';
-import google_logo from '../../assets/icon/Google.png';
 import ParticleEffect from '../../components/ParticleEffect.jsx';
 import password_icon from '../../assets/icon/lock-stroke-rounded.svg';
 import email_icon from '../../assets/icon/mail-stroke-rounded.svg';
 
-const Login = () => {
+const Login = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  // Handle login form submission
   const handleLogin = async (e) => {
     e.preventDefault();
+    console.log('Attempting login with:', email, password);
+  
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      navigate('/home'); // Redirect to the home page
+      const response = await fetch(`http://localhost:5000/api/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      const data = await response.json();
+      console.log('Response from backend:', data); // Log the response
+  
+      if (response.ok) {
+        onLogin(data.user);
+        navigate('/home');
+      } else {
+        setError(data.msg || 'Invalid email or password. Please try again.');
+      }
     } catch (error) {
-      setError(error.message);
+      console.error('Error during login request:', error); // Log any error that occurs
+      setError('An error occurred. Please try again.');
     }
   };
-
-  const handleGoogleSignIn = async () => {
-    try {
-      await signInWithPopup(auth, googleProvider);
-      navigate('/home'); // Redirect to the home page
-    } catch (error) {
-      setError(error.message);
-    }
-  };
+  
+  
 
   return (
     <div className='login-main'>
@@ -41,38 +49,36 @@ const Login = () => {
         <div className='login-container'>
           <h1>Login</h1>
           <form onSubmit={handleLogin}>
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <img className='login-email-icon' src={email_icon} alt="email icon" />
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <img className='login-password-icon' src={password_icon} alt="password icon" />
+            <div className="input-group">
+              <input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <img className='login-email-icon' src={email_icon} alt="email icon" />
+            </div>
+            <div className="input-group">
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <img className='login-password-icon' src={password_icon} alt="password icon" />
+            </div>
             <p>
               Don't have an account? <a href="/signup">Sign up here</a>
             </p>
             {error && (
               <p style={{ color: 'red', fontSize: '14px' }}>
-                {error === 'Firebase: Error (auth/user-not-found).'
-                  ? 'User  not found. Please check your email and password.'
-                  : 'Invalid email or password. Please try again.'}
+                {error}
               </p>
             )}
             <button className='login-button' type="submit">Login</button>
           </form>
-          <button className="google-button" onClick={handleGoogleSignIn}>
-            <img className="google-logo" src={google_logo} alt="Google Logo" />
-            Login with Google
-          </button>
         </div>
       </div>
     </div>

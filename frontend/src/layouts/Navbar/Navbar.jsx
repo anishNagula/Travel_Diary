@@ -9,9 +9,9 @@ const Navbar = () => {
       <Link to="/landing"><img className={styles.logo} src={logo} alt="Logo" /></Link>
       <div className={styles.rightsection}>
         <ul>
-          <li><a><Link to="/why">Why Us</Link></a></li>
-          <li><a><Link to="/reviews">Reviews</Link></a></li>
-          <li><a><Link to="/contact">Contact Us</Link></a></li>
+          <li><Link to="/why">Why Us</Link></li>
+          <li><Link to="/reviews">Reviews</Link></li>
+          <li><Link to="/contact">Contact Us</Link></li>
         </ul>
         <button><Link to="/login" >Login</Link></button>
         <button><Link to="/signup" >Sign Up</Link></button>

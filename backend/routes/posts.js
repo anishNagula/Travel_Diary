@@ -29,26 +29,22 @@ router.get('/', async (req, res) => {
 
 // Create a new post with optional image upload
 router.post('/', upload.single('image'), async (req, res) => {
-  console.log('Received file:', req.file);
-
-  const { title, content } = req.body;
+  const { title, content, username } = req.body; // Extract username from the request
   const newPost = new Post({
     title,
     content,
     profilePic: 'https://robohash.org/default?size=20x20',
-    username: 'You',
+    username: username || 'Anonymous', // Use the provided username or default to 'Anonymous'
     likes: 0,
     comments: [],
   });
-
+  
   // Check if an image was uploaded
   if (req.file) {
     const normalizedImagePath = req.file.path.replace(/\\+/g, '/');
-    console.log('Normalized Image Path:', normalizedImagePath);
     newPost.image = normalizedImagePath;
   } else {
     newPost.image = null;
-    console.log('No image uploaded');
   }
 
   try {
@@ -58,6 +54,8 @@ router.post('/', upload.single('image'), async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
+
+
 
 // Delete a post
 router.delete('/:id', async (req, res) => {

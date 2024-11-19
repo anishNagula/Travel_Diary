@@ -1,16 +1,22 @@
-import React, { useState } from 'react';
-import { auth } from '../../firebase.js'; // Adjust the path as necessary
-import { signOut } from 'firebase/auth';
-import './mainnavbar.css'
+import React from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate to navigate after logout
+import './mainnavbar.css';
 
-const MainNavbar = () => {
-  
+const MainNavbar = ({ onLogout }) => {
+  console.log(onLogout); // Check what is passed here
+
+  const navigate = useNavigate();
+
   const handleLogout = async () => {
     try {
-      await signOut(auth); // Sign out from Firebase
-      navigate('/'); // Redirect to the login page after logout
+      if (typeof onLogout === 'function') {
+        onLogout();
+        navigate('/');
+      } else {
+        console.error('onLogout is not a function');
+      }
     } catch (error) {
-      console.error('Logout error:', error); // Handle error as needed
+      console.error('Logout error:', error);
     }
   };
 
@@ -21,7 +27,7 @@ const MainNavbar = () => {
         Logout
       </button>
     </div>
-  )
-}
+  );
+};
 
 export default MainNavbar;

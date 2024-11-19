@@ -8,7 +8,7 @@ import imageIcon from '../../assets/icon/image-02-stroke-rounded.svg';
 import clipIcon from '../../assets/icon/attachment-02-stroke-rounded.svg';
 import ForumPost from '../../components/Post/Post.jsx';
 
-const Home = () => {
+const Home = ({ user }) => { // user prop contains the logged-in user's details
   const [posts, setPosts] = useState([]); // To hold the fetched posts
   const [newPost, setNewPost] = useState({ title: '', content: '' }); // For handling new post form data
   const [selectedImage, setSelectedImage] = useState(null); // To handle image upload for a new post
@@ -34,6 +34,7 @@ const Home = () => {
       const formData = new FormData();
       formData.append('title', newPost.title);
       formData.append('content', newPost.content);
+      formData.append('username', user.username); // Pass the logged-in user's username
       if (selectedImage) formData.append('image', selectedImage); // Attach selected image if available
 
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/posts`, {
@@ -61,7 +62,7 @@ const Home = () => {
   return (
     <div>
       <MainNavbar />
-      <Sidebar />
+      <Sidebar user={user}/>
       <div className="forum-container">
         <main className="forum-feed">
           <div className="forum-feed-container">

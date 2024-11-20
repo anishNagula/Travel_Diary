@@ -1,9 +1,9 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate to navigate after logout
+import { useNavigate } from 'react-router-dom';
 import './mainnavbar.css';
 
 const MainNavbar = ({ onLogout }) => {
-  console.log(onLogout); // Check what is passed here
+  console.log(onLogout);
 
   const navigate = useNavigate();
 

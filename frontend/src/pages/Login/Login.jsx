@@ -11,7 +11,7 @@ const Login = ({ onLogin }) => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  // Handle login form submission
+  // to handle login submission
   const handleLogin = async (e) => {
     e.preventDefault();
     console.log('Attempting login with:', email, password);
@@ -26,7 +26,7 @@ const Login = ({ onLogin }) => {
       });
   
       const data = await response.json();
-      console.log('Response from backend:', data); // Log the response
+      console.log('Response from backend:', data);
   
       if (response.ok) {
         onLogin(data.user);
@@ -35,7 +35,7 @@ const Login = ({ onLogin }) => {
         setError(data.msg || 'Invalid email or password. Please try again.');
       }
     } catch (error) {
-      console.error('Error during login request:', error); // Log any error that occurs
+      console.error('Error during login request:', error);
       setError('An error occurred. Please try again.');
     }
   };

@@ -1,10 +1,9 @@
 import React from 'react';
-import styles from './sidebar.module.css';  // Import the CSS module
+import styles from './sidebar.module.css';
 
 const Sidebar = ({user}) => {
   return (
     <aside className={styles.sidebarLeft}>
-      {/* Profile Summary */}
       <div className={styles.profileSummary}>
         <h3>{user?.username || 'Guest'}</h3>
         <p>Computer Science Student</p>

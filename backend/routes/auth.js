@@ -1,33 +1,31 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User');  // Import the User model
+const User = require('../models/User');
 
-// POST route for registering a new user
+// route for registering
 router.post('/register', async (req, res) => {
   const { email, username, password } = req.body;
 
   try {
-    // Check if the user already exists
+    // check if the user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ msg: 'User already exists' });
     }
 
-    // Create a new user (MongoDB will automatically generate an `_id` for us)
+    // create a new user
     const newUser = new User({
       email,
       username,
       password,
     });
 
-    // Save the user to the database
     await newUser.save();
 
-    // Respond with the newly created user
     res.status(201).json({
       msg: 'User created successfully',
       user: {
-        id: newUser._id,   // MongoDB will auto-generate the `_id`
+        id: newUser._id,
         email: newUser.email,
         username: newUser.username,
       },
@@ -38,23 +36,20 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// POST route for logging in an existing user
+// route for login
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Find the user by email
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ msg: 'Invalid credentials' });
     }
 
-    // Compare passwords (in real scenarios, hash passwords before comparing)
     if (user.password !== password) {
       return res.status(400).json({ msg: 'Invalid credentials' });
     }
 
-    // Respond with the user details (excluding password for security)
     res.status(200).json({
       msg: 'Login successful',
       user: {
@@ -71,8 +66,7 @@ router.post('/login', async (req, res) => {
 
 router.post('/logout', (req, res) => {
   try {
-    // Clear any server-side session or cookie if using sessions or tokens
-    req.session = null; // Example if using sessions
+    req.session = null;
     res.status(200).json({ msg: 'Logout successful' });
   } catch (err) {
     console.error(err);

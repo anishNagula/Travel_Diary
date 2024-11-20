@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; // Add this line
+import { Link } from 'react-router-dom';
 import styles from './navbar.module.css';
 import logo from '../../assets/icon/backpack-stroke-rounded.svg'
 

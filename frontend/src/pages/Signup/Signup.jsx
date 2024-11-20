@@ -33,8 +33,8 @@ const Signup = ({ onLogin }) => {
       if (response.ok) {
         const data = await response.json();
         console.log('User created successfully:', data.user);
-        onLogin(data.user); // Update the user state in App.jsx
-        navigate('/home'); // Navigate to /home
+        onLogin(data.user);
+        navigate('/home');
       } else {
         const data = await response.json();
         setError(data.msg || 'An error occurred during signup.');

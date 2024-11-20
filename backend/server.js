@@ -1,29 +1,29 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const connectDB = require('./config/db'); // Database connection
-const postRoutes = require('./routes/posts'); // Post routes
-const authRoutes = require('./routes/auth'); // Authentication routes (for signup)
+const connectDB = require('./config/db'); // connecting to database
+const postRoutes = require('./routes/posts'); // post routes
+const authRoutes = require('./routes/auth'); // authentication routes
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Connect to MongoDB
+// connecting to mongodb
 connectDB();
 
 // Middleware
 app.use(cors());
-app.use(express.json()); // Parse JSON bodies
+app.use(express.json());
 
 // Serve static files from 'uploads' folder
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Routes
-app.use('/api/posts', postRoutes); // Post routes
-app.use('/api/auth', authRoutes);  // Authentication routes
+// routes
+app.use('/api/posts', postRoutes);
+app.use('/api/auth', authRoutes);
 
-// Start the server
+// starting the server at specified port
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });

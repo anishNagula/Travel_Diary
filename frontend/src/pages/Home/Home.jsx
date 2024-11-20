@@ -8,18 +8,18 @@ import imageIcon from '../../assets/icon/image-02-stroke-rounded.svg';
 import clipIcon from '../../assets/icon/attachment-02-stroke-rounded.svg';
 import ForumPost from '../../components/Post/Post.jsx';
 
-const Home = ({ user }) => { // user prop contains the logged-in user's details
-  const [posts, setPosts] = useState([]); // To hold the fetched posts
-  const [newPost, setNewPost] = useState({ title: '', content: '' }); // For handling new post form data
-  const [selectedImage, setSelectedImage] = useState(null); // To handle image upload for a new post
+const Home = ({ user }) => {
+  const [posts, setPosts] = useState([]);
+  const [newPost, setNewPost] = useState({ title: '', content: '' });
+  const [selectedImage, setSelectedImage] = useState(null);
 
-  // Fetch posts from the backend
+  // fetching posts from backend
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/posts`); // Ensure the API endpoint is correct
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/posts`);
         const data = await response.json();
-        setPosts(data); // Store the fetched posts in state
+        setPosts(data);
       } catch (error) {
         console.error('Error fetching posts:', error);
       }
@@ -28,14 +28,14 @@ const Home = ({ user }) => { // user prop contains the logged-in user's details
     fetchPosts();
   }, []);
 
-  // Handle new post submission
+  // to handel new post submissions
   const handlePostSubmit = async () => {
     try {
       const formData = new FormData();
       formData.append('title', newPost.title);
       formData.append('content', newPost.content);
-      formData.append('username', user.username); // Pass the logged-in user's username
-      if (selectedImage) formData.append('image', selectedImage); // Attach selected image if available
+      formData.append('username', user.username);
+      if (selectedImage) formData.append('image', selectedImage);
 
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/posts`, {
         method: 'POST',
@@ -44,9 +44,9 @@ const Home = ({ user }) => { // user prop contains the logged-in user's details
 
       if (response.ok) {
         const newPostData = await response.json();
-        setPosts((prevPosts) => [newPostData, ...prevPosts]); // Add the new post to the front of the list
-        setNewPost({ title: '', content: '' }); // Clear input fields
-        setSelectedImage(null); // Clear image selection
+        setPosts((prevPosts) => [newPostData, ...prevPosts]);
+        setNewPost({ title: '', content: '' });
+        setSelectedImage(null);
       } else {
         console.error('Error posting the new post');
       }
@@ -66,7 +66,6 @@ const Home = ({ user }) => { // user prop contains the logged-in user's details
       <div className="forum-container">
         <main className="forum-feed">
           <div className="forum-feed-container">
-            {/* Render the posts */}
             {posts.length > 0 ? (
               posts.map((postDetails) => (
                 <ForumPost
@@ -80,7 +79,7 @@ const Home = ({ user }) => { // user prop contains the logged-in user's details
                       )
                     );
                   }}
-                  currentUser={user} // Pass the user as currentUser
+                  currentUser={user}
                 />
               ))
             ) : (
@@ -115,7 +114,7 @@ const Home = ({ user }) => { // user prop contains the logged-in user's details
               className="forum-post-icon"
               src={postIcon}
               alt="post icon"
-              onClick={handlePostSubmit} // Handle post submission when clicked
+              onClick={handlePostSubmit}
             />
           </div>
         </main>

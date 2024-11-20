@@ -6,7 +6,7 @@ import comment from '../../assets/icon/bubble-chat-stroke-rounded.svg';
 import share from '../../assets/icon/share-01-stroke-rounded.svg';
 import deleteIcon from '../../assets/icon/delete-02-stroke-rounded.svg';
 
-const ForumPost = ({ postDetails, onDelete, onLike, currentUser }) => {  // Pass currentUser as a prop
+const ForumPost = ({ postDetails, onDelete, onLike, currentUser }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [newComment, setNewComment] = useState('');
   const [comments, setComments] = useState(postDetails.comments);
@@ -25,7 +25,7 @@ const ForumPost = ({ postDetails, onDelete, onLike, currentUser }) => {  // Pass
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            username: currentUser.username,  // Use currentUser's username for the comment
+            username: currentUser.username,
             content: newComment,
           }),
         });

@@ -70,8 +70,8 @@ const Home = ({ user }) => { // user prop contains the logged-in user's details
             {posts.length > 0 ? (
               posts.map((postDetails) => (
                 <ForumPost
-                  key={postDetails._id} // Ensure each post has a unique key
-                  postDetails={postDetails} // Pass post details as a prop to ForumPost component
+                  key={postDetails._id}
+                  postDetails={postDetails}
                   onDelete={handleDeletePost}
                   onLike={(id, updatedLikes) => {
                     setPosts((prevPosts) =>
@@ -80,6 +80,7 @@ const Home = ({ user }) => { // user prop contains the logged-in user's details
                       )
                     );
                   }}
+                  currentUser={user} // Pass the user as currentUser
                 />
               ))
             ) : (
